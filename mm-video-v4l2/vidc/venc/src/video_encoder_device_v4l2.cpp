@@ -4769,8 +4769,7 @@ bool venc_dev::venc_set_vqzip_sei_type(OMX_BOOL enable)
 #ifdef _VQZIP_
     vqzip.pConfig.nWidth = m_sVenc_cfg.input_width;
     vqzip.pConfig.nHeight = m_sVenc_cfg.input_height;
-    vqzip.init();
-    vqzip_sei_info.enabled = true;
+    vqzip_sei_info.enabled = vqzip.init();
 #endif
 
     return true;
