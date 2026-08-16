@@ -5125,8 +5125,14 @@ bool omx_video::alloc_map_ion_memory(int size, venc_ion *ion_info, int flag)
         ion_close(ion_info->dev_fd);
         ion_info->data_fd = -1;
         ion_info->dev_fd = -1;
+        ion_info->fd_ion_data.fd = -1;
         return false;
     }
+
+    // msm8998's _PQ_ (ROI) path reads the legacy fd_ion_data wrapper instead
+    // of data_fd directly; mirror the fd modern ion_alloc_fd() returned so
+    // that path sees a valid handle instead of an uninitialized member.
+    ion_info->fd_ion_data.fd = ion_info->data_fd;
 
     return true;
 }
@@ -5139,6 +5145,7 @@ void omx_video::free_ion_memory(struct venc_ion *buf_ion_info)
     if (buf_ion_info->data_fd >= 0) {
         close(buf_ion_info->data_fd);
         buf_ion_info->data_fd = -1;
+        buf_ion_info->fd_ion_data.fd = -1;
     }
     if (buf_ion_info->dev_fd >= 0) {
         ion_close(buf_ion_info->dev_fd);
