@@ -106,6 +106,10 @@ struct venc_ion {
     int dev_fd;
     int data_fd;
     struct ion_allocation_data alloc_data;
+    // msm8998's _PQ_ (ROI) path still reads the legacy fd_ion_data wrapper
+    // that the sdm845+-era refactor moved off of; keep it filled in
+    // alongside data_fd rather than reworking the ROI path.
+    struct ion_fd_data fd_ion_data;
 };
 
 #endif
